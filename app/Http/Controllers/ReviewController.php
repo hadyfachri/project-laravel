@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReviewRequest;
 use App\Models\Review;
 use App\Repositories\ReviewRepository;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class ReviewController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ReviewRequest $request)
     {
         return response()->json([
             $this->reviewRepository->create($request),

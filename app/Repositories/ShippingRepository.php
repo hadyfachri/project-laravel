@@ -35,7 +35,7 @@ class ShippingRepository
             'address' => $request->address,
             'shipping_method' => $request->shipping_method,
             'shipping_cost' => $request->shipping_cost,
-            'status' => $request->status,
+            'status' => $request->status ?? 'pending',
         ]);
     }
 

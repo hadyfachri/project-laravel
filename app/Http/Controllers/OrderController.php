@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderRequest;
 use App\Models\Inventory;
 use App\Models\Order;
 use App\Repositories\OrderRepository;
@@ -26,7 +27,7 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
         return response()->json([
             $this->orderRepository->create($request),
