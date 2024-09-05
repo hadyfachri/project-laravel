@@ -6,6 +6,7 @@ use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use App\Repositories\CategoryRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -27,10 +28,21 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        return response()->json([
-            'data' => $this->categoryRepository->create($request),
-            'status' => 'kategori berhasil ditambahkan'
-        ]);
+        $isAdmin = Auth::user()->role == 'admin';
+        if($isAdmin)
+        {
+            return response()->json([
+                'data' => $this->categoryRepository->create($request),
+                'status' => 'kategori berhasil ditambahkan'
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'hanya admin yang dapat input category' 
+            ]);
+        }
     }
 
     /**
@@ -48,11 +60,21 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, string $id)
     {
-        
+        $isAdmin = Auth::user()->role == 'admin';
+        if($isAdmin)
+        {
         return response()->json([
             $this->categoryRepository->update($request, $id),
             'status' => 'data berhasil diupdate'
         ]);
+        }
+        else
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'hanya admin yang dapat update category' 
+            ]);
+        }
     }
 
     /**
@@ -60,9 +82,20 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
+        $isAdmin = Auth::user()->role == 'admin';
+        if(!$isAdmin)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'hanya admin yang dapat input category' 
+            ]);
+        }
+        else
+        {
         return response()->json([
             $this->categoryRepository->delete($id),
             'status' => 'data berhasil dihapus'
         ]);
+        }
     }
 }

@@ -32,31 +32,47 @@ class ProductRepository
     {
         $image = $request->file('image');
         $image->storeAs('/public/post$post', $image->hashName());
-        return $this->model->create([
-            'category_id' => $request->category_id,
-            'name' => $request->name,
-            'description' => $request->description,
-            'price' => $request->price,
-            'stock' => $request->stock,
-            'image' => $image->hashName()
+        $isAdmin = $request->usre()->where('role', 'admin');
+        if($isAdmin)
+        {
+            return $this->model->create([
+                'category_id' => $request->category_id,
+                'name' => $request->name,
+                'description' => $request->description,
+                'price' => $request->price,
+                'stock' => $request->stock,
+                'image' => $image->hashName()
         ]);
+        }
+        else
+        {
+            return response()->json(['Hanya admin yang dapat input product']);
+        }
     }
 
     public function update($request, $id)
     {
         $product = $this->model;
+        $isAdmin = $request->user()->where('role', 'admin');
         $image = $request->file('image');
         $image->storeAs('/public/post$post', $image->hashName());
-        return $product->findOrfail($id)->update([
-            'data' => $product->create([
-            'category_id' => $request->category_id ?? $product->category_id,
-            'name' => $request->name ?? $product->name,
-            'description' => $request->description ?? $product->description,
-            'price' => $request->price ?? $product->price,
-            'stock' => $request->stock ?? $product->stock,
-            'image' => $image->hashName() ?? $product->image
-            ]),
-    ]);
+        if($isAdmin)
+        {
+            return $product->findOrfail($id)->update([
+                'data' => $product->create([
+                'category_id' => $request->category_id ?? $product->category_id,
+                'name' => $request->name ?? $product->name,
+                'description' => $request->description ?? $product->description,
+                'price' => $request->price ?? $product->price,
+                'stock' => $request->stock ?? $product->stock,
+                'image' => $image->hashName() ?? $product->image
+                ]),
+            ]);
+        }
+        else
+        {
+            return null;
+        }
         
     }
 

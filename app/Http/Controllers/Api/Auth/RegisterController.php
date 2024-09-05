@@ -14,7 +14,7 @@ class RegisterController extends Controller
      */
     public function index()
     {
-        //
+        return User::get();
     }
 
     /**
@@ -25,7 +25,8 @@ class RegisterController extends Controller
         $user = User::create([
             'name' => $request->name ?? null,
             'password' => bcrypt($request->password) ?? bcrypt(12345678), 
-            'email' => $request->email
+            'email' => $request->email,
+            'role' => $request->role
         ]);
 
         return response()->json([
