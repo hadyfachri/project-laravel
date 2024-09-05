@@ -87,7 +87,7 @@ class CategoryController extends Controller
         {
             return response()->json([
                 'status' => 'error',
-                'message' => 'hanya admin yang dapat input category' 
+                'message' => 'hanya admin yang dapat hapus category' 
             ]);
         }
         else
