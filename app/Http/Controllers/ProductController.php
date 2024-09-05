@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -29,10 +30,20 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        return response()->json([
-            $this->productRepository->create($request),
-            'status' => 'data berhasil ditambah' 
+        $isAdmin = Auth::user()->role == 'admin';
+        if($isAdmin)
+        {
+            return response()->json([
+                $this->productRepository->create($request),
+                'status' => 'data berhasil ditambah' 
         ]);
+        }
+        else{
+            return response()->json([
+                'status' => 'error',
+                'message' => 'hanya admin yang dapat input product' 
+            ]);
+        }
     }
 
     /**
