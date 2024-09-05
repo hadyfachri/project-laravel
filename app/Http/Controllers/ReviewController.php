@@ -3,17 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Review;
+use App\Repositories\ReviewRepository;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $reviewRepository;
+
+    public function __construct(ReviewRepository $reviewRepository)
+    {
+        $this->reviewRepository = $reviewRepository;
+    }
+
     public function index()
     {
         return response()->json([
-            'data' => Review::get()
+            'data' => $this->reviewRepository->getAll(),
         ]);
     }
 
@@ -23,13 +28,8 @@ class ReviewController extends Controller
     public function store(Request $request)
     {
         return response()->json([
-            'data' => Review::create([
-                'user_id' => $request->user_id,
-                'product_id' => $request->product_id,
-                'rating' => $request->rating,
-                'comment' => $request->comment,
-            ]),
-            'status' => 'data berhasil ditambahkan'
+            $this->reviewRepository->create($request),
+            'status' => 'data berhasil ditambah' 
         ]);
     }
 
@@ -39,7 +39,7 @@ class ReviewController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => Review::findOrFait($id)
+            'data' => $this->reviewRepository->getById($id)
         ]);
     }
 
@@ -48,12 +48,8 @@ class ReviewController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $review = Review::findOrFail($id);
         return response()->json([
-            'data' => $review->create([
-                'rating' => $request->rating ?? $review->rating,
-                'comment' => $request->comment ?? $review->comment,
-            ]),
+            $this->reviewRepository->update($request, $id),
             'status' => 'data berhasil diupdate'
         ]);
     }
@@ -64,8 +60,8 @@ class ReviewController extends Controller
     public function destroy(string $id)
     {
         return response()->json([
-            Review::findOrFail($id)->delete(),
-            'status' => 'data berhasil dihapus'
+            $this->reviewRepository->delete($id),
+            'status' => 'Data berhasil dihapus'
         ]);
     }
 }

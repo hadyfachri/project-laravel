@@ -3,17 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Repositories\CategoryRepository;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $categoryRepository;
+
+    public function __construct(CategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
+
     public function index()
     {
         return response()->json([
-            'data' => Category::get()]);
+            'data' => $this->categoryRepository->getAll()]);
     }
 
     /**
@@ -21,13 +26,8 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $category = Category::create([
-            'name' => $request->name,
-            'description' => $request->description
-        ]);
-
         return response()->json([
-            'data' => $category,
+            'data' => $this->categoryRepository->create($request),
             'status' => 'kategori berhasil ditambahkan'
         ]);
     }
@@ -38,7 +38,7 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => Category::findOrFail($id)
+            'data' => $this->categoryRepository->getById($id)
         ]);
     }
 
@@ -47,10 +47,10 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $category = Category::findOrFail($id);
-        $category->update([
-            'name' => $request->name ?? $category->name,
-            'description' => $request->description ?? $category->description
+        
+        return response()->json([
+            $this->categoryRepository->update($request, $id),
+            'status' => 'data berhasil diupdate'
         ]);
     }
 
@@ -60,7 +60,7 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         return response()->json([
-            Category::findOrFail($id)->delete(),
+            $this->categoryRepository->delete($id),
             'status' => 'data berhasil dihapus'
         ]);
     }
