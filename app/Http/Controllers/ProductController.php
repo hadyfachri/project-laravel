@@ -61,10 +61,20 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $isAdmin = Auth::user()->role == 'admin';
+        if($isAdmin)
+        {
         return response()->json([
             $this->productRepository->update($request, $id),
             'status' => 'data berhasil diupdate'
         ]);
+        }
+        else{
+            return response()->json([
+                'status' => 'error',
+                'message' => 'hanya admin yang dapat update product' 
+            ]);
+        }
     }
 
     /**
@@ -72,9 +82,20 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
+        $isAdmin = Auth::user()->role == 'admin';
+        if($isAdmin)
+        {
         return response()->json([
             $this->productRepository->delete($id),
             'status' => 'Data berhasil dihapus'
         ]);
+        }
+        else
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'hanya admin yang dapat hapus product' 
+            ]);
+        }
     }
 }
