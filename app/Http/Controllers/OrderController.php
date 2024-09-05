@@ -4,17 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Inventory;
 use App\Models\Order;
+use App\Repositories\OrderRepository;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $orderRepository;
+
+    public function __construct(OrderRepository $orderRepository)
+    {
+        $this->orderRepository = $orderRepository;
+    }
+
     public function index()
     {
         return response()->json([
-            'data' => Order::get(),
+            'data' => $this->orderRepository->getAll(),
         ]);
     }
 
@@ -23,10 +28,9 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $order = Order::create([
-            'user_id' => $request->user_id,
-            'total_price' => $request->total_price,
-            'status' => $request->status
+        return response()->json([
+            $this->orderRepository->create($request),
+            'status' => 'data berhasil ditambah' 
         ]);
     }
 
@@ -36,7 +40,7 @@ class OrderController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => Order::findOrFail($id)
+            'data' => $this->orderRepository->getById($id)
         ]);
     }
 
@@ -45,11 +49,9 @@ class OrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $order = Order::findOrFail($id);
-        $order->update([
-            'user_id' => $request->user_id ?? $order->user_id,
-            'total_price' => $request->total_price ?? $order->total_price,
-            'status' => $request->status ?? $order->status
+        return response()->json([
+            $this->orderRepository->update($request, $id),
+            'status' => 'data berhasil diupdate'
         ]);
     }
 
@@ -59,7 +61,7 @@ class OrderController extends Controller
     public function destroy(string $id)
     {
         return response()->json([
-            Order::findOrFail($id)->delete(),
+            $this->orderRepository->delete($id),
             'status' => 'Data berhasil dihapus'
         ]);
     }

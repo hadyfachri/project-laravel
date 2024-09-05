@@ -3,18 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Repositories\PaymentRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $paymentRepository;
+
+    public function __construct(PaymentRepository $paymentRepository)
+    {
+        $this->paymentRepository = $paymentRepository;
+    }
+
     public function index()
     {
         return response()->json([
-            'data' => Payment::get()
+            'data' => $this->paymentRepository->getAll(),
         ]);
     }
 
@@ -24,15 +29,8 @@ class PaymentController extends Controller
     public function store(Request $request)
     {
         return response()->json([
-            'data' => Payment::create([
-                'order_id' => $request->order_id,
-                'amount' => $request->amount,
-                'payment_method' => $request->payment_method,
-                'status' => $request->status,
-                'transaction_date' => Carbon::now(),
-                ]),
-
-            'status' => 'data berhasil ditambahkan'
+            $this->paymentRepository->create($request),
+            'status' => 'data berhasil ditambah' 
         ]);
     }
 
@@ -42,7 +40,7 @@ class PaymentController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => Payment::findOrFail($id)
+            'data' => $this->paymentRepository->getById($id)
         ]);
     }
 
@@ -51,15 +49,8 @@ class PaymentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $payment = Payment::findOrFail($id);
         return response()->json([
-            'data' => $payment->update([
-                'order_id' => $request->order_id ?? $payment->order_id,
-                'amount' => $request->amount ?? $payment->amount,
-                'payment_method' => $request->payment_method ?? $payment->payment_method,
-                'status' => $request->status ?? $payment->status,
-                ]),
-
+            $this->paymentRepository->update($request, $id),
             'status' => 'data berhasil diupdate'
         ]);
     }
@@ -70,8 +61,8 @@ class PaymentController extends Controller
     public function destroy(string $id)
     {
         return response()->json([
-            Payment::findOrFail($id)->delete(),
-            'status' => 'data berhasil dihapus;'
+            $this->paymentRepository->delete($id),
+            'status' => 'Data berhasil dihapus'
         ]);
     }
 }

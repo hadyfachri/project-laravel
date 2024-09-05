@@ -3,17 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Supplier;
+use App\Repositories\SupplierRepository;
 use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $supplierRepository;
+
+    public function __construct(SupplierRepository $supplierRepository)
+    {
+        $this->supplierRepository = $supplierRepository;
+    }
+
     public function index()
     {
         return response()->json([
-            'data' => Supplier::get()
+            'data' => $this->supplierRepository->getAll(),
         ]);
     }
 
@@ -23,11 +28,8 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         return response()->json([
-            'data'=> Supplier::create([
-                'name' => $request->name,
-                'contact_info' => $request->contact_info  
-            ]),
-            'status' => 'data berhasil ditambahkan'
+            $this->supplierRepository->create($request),
+            'status' => 'data berhasil ditambah' 
         ]);
     }
 
@@ -37,7 +39,7 @@ class SupplierController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => Supplier::findOrFail($id)
+            'data' => $this->supplierRepository->getById($id)
         ]);
     }
 
@@ -46,12 +48,8 @@ class SupplierController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $supplier = Supplier::findOrFail($id);
         return response()->json([
-            'data'=> $supplier->create([
-                'name' => $request->name ?? $supplier->name,
-                'contact_info' => $request->contact_info ?? $supplier->contact_info 
-            ]),
+            $this->supplierRepository->update($request, $id),
             'status' => 'data berhasil diupdate'
         ]);
     }
@@ -62,8 +60,8 @@ class SupplierController extends Controller
     public function destroy(string $id)
     {
         return response()->json([
-            Supplier::findOrFail($id)->delete(),
-            'status' => 'data berhasil dihapus'
+            $this->supplierRepository->delete($id),
+            'status' => 'Data berhasil dihapus'
         ]);
     }
 }

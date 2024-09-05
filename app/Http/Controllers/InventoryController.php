@@ -3,19 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inventory;
+use App\Repositories\InventoryRepository;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $inventoryRepository;
+
+    public function __construct(InventoryRepository $inventoryRepository)
+    {
+        $this->inventoryRepository = $inventoryRepository;
+    }
+    
     public function index()
     {
         return response()->json([
-            'data' => Inventory::orderBy('created_at', 'asc')->get(),
+            'data' => $this->inventoryRepository->getAll(),
         ]);
     }
 
@@ -24,17 +29,9 @@ class InventoryController extends Controller
      */
     public function store(Request $request)
     {
-        $inventory = Inventory::create([
-            'supplier_id' => $request->supplier_id,
-            'product_id' => $request->product_id,
-            'quantity' => $request->quantity,
-            'cost_price' => $request->cost_price,
-            'recieved_date' => Carbon::now()
-        ]);
-
         return response()->json([
             'status' => 'data berhasil ditambahkan',
-            'data' => $inventory
+            'data' => $this->inventoryRepository->create($request)
         ]);
     }
 
@@ -44,7 +41,7 @@ class InventoryController extends Controller
     public function show(string $id)
     {
         return response()->josn([
-            'data' => Inventory::findOrFail($id)
+            'data' => $this->inventoryRepository->getById($id)
         ]);
     }
 
@@ -53,12 +50,8 @@ class InventoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $inventory = Inventory::findOrFail($id);
-        $inventory->update([
-            'supplier_id' => $request->supplier_id ?? $inventory->supplier_id,
-            'product_id' => $request->product_id ?? $inventory->product_id,
-            'quantity' => $request->quantity ?? $inventory->quantity,
-            'cost_price' => $request->cost_price ?? $inventory->cost_price,
+        return response()->json([
+            $this->inventoryRepository->update($request, $id)
         ]);
     }
 
@@ -68,7 +61,7 @@ class InventoryController extends Controller
     public function destroy(string $id)
     {
         return response()->json([
-            Inventory::findOrFail($id)->delete(),
+            $this->inventoryRepository->delete($id),
             'status' => 'data berhasil dihapus'
         ]);
     }

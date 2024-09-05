@@ -3,17 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Shipping;
+use App\Repositories\ShippingRepository;
 use Illuminate\Http\Request;
 
 class ShippingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $shippingRepository;
+
+    public function __construct(ShippingRepository $shippingRepository)
+    {
+        $this->shippingRepository = $shippingRepository;
+    }
+
     public function index()
     {
         return response()->json([
-            'data' => Shipping::get()
+            'data' => $this->shippingRepository->getAll(),
         ]);
     }
 
@@ -23,14 +28,8 @@ class ShippingController extends Controller
     public function store(Request $request)
     {
         return response()->json([
-            'data' => Shipping::create([
-                'order_id' => $request->order_id,
-                'address' => $request->address,
-                'shipping_method' => $request->shipping_method,
-                'shipping_cost' => $request->shipping_cost,
-                'status' => $request->status,
-            ]),
-            'status' => 'data berhasil ditambahkan'
+            $this->shippingRepository->create($request),
+            'status' => 'data berhasil ditambah' 
         ]);
     }
 
@@ -40,7 +39,7 @@ class ShippingController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => Shipping::findOrFail($id)
+            'data' => $this->shippingRepository->getById($id)
         ]);
     }
 
@@ -49,14 +48,8 @@ class ShippingController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $shipping = Shipping::findOrFail($id);
         return response()->json([
-            'data' => $shipping->create([
-                'address' => $request->address ?? $shipping->address,
-                'shipping_method' => $request->shipping_method ?? $shipping->shipping_method,
-                'shipping_cost' => $request->shipping_cost ?? $shipping->shipping_cost,
-                'status' => $request->status ?? $shipping->status,
-            ]),
+            $this->shippingRepository->update($request, $id),
             'status' => 'data berhasil diupdate'
         ]);
     }
@@ -67,8 +60,8 @@ class ShippingController extends Controller
     public function destroy(string $id)
     {
         return response()->json([
-            Shipping::findOrFail($id)->delete(),
-            'status' => 'data berhasil dihapus'
+            $this->shippingRepository->delete($id),
+            'status' => 'Data berhasil dihapus'
         ]);
     }
 }

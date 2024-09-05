@@ -4,17 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use App\Models\Product;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $productRepository;
+
+    public function __construct(ProductRepository $productRepository)
+    {
+        $this->productRepository = $productRepository;
+    }
+
     public function index()
     {
         return response()->json([
-            'data' => Product::get()
+            'data' => $this->productRepository->getAll(),
         ]);
     }
 
@@ -23,19 +28,9 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $image = $request->file('image');
-        $image->storeAs('/public/post$post', $image->hashName());
         return response()->json([
-            'data' => Product::create([
-                'category_id' => $request->category_id,
-                'name' => $request->name,
-                'description' => $request->description,
-                'price' => $request->price,
-                'stock' => $request->stock,
-                'image' => $image->hashName()
-            ]),
-
-            'status' => 'data berhasil ditambahkan'
+            $this->productRepository->create($request),
+            'status' => 'data berhasil ditambah' 
         ]);
     }
 
@@ -45,7 +40,7 @@ class ProductController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => Payment::findorFail($id)
+            'data' => $this->productRepository->getById($id)
         ]);
     }
 
@@ -54,19 +49,8 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $image = $request->file('image');
-        $image->storeAs('/public/post$post', $image->hashName());
-        $payment = Payment::findOrFail($id);
         return response()->json([
-            'data' => $payment->create([
-                'category_id' => $request->category_id ?? $payment->category_id,
-                'name' => $request->name ?? $payment->name,
-                'description' => $request->description ?? $payment->description,
-                'price' => $request->price ?? $payment->price,
-                'stock' => $request->stock ?? $payment->stock,
-                'image' => $image->hashName() ?? $payment->image
-            ]),
-
+            $this->productRepository->update($request, $id),
             'status' => 'data berhasil diupdate'
         ]);
     }
@@ -77,8 +61,8 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         return response()->json([
-            Payment::findOrFail($id)->delete(),
-            'status' => 'data berhasil dihapus'
+            $this->productRepository->delete($id),
+            'status' => 'Data berhasil dihapus'
         ]);
     }
 }

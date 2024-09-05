@@ -3,17 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\OrderItem;
+use App\Repositories\OrderItemRepository;
 use Illuminate\Http\Request;
 
 class OrderItemController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $orderItemRepository;
+
+    public function __construct(OrderItemRepository $orderItemRepository)
+    {
+        $this->orderItemRepository = $orderItemRepository;
+    }
+
     public function index()
     {
         return response()->json([
-            'data' => OrderItem::get()
+            'data' => $this->orderItemRepository->getAll(),
         ]);
     }
 
@@ -22,16 +27,9 @@ class OrderItemController extends Controller
      */
     public function store(Request $request)
     {
-        $orderItem = OrderItem::create([
-            'order_id' => $request->order_id,
-            'product_id' => $request->product_id,
-            'quantity' => $request->quantity,
-            'price' => $request->price
-        ]);
-
         return response()->json([
-            'data' => $orderItem,
-            'status' => 'data berhasil ditambahkan'
+            $this->orderItemRepository->create($request),
+            'status' => 'data berhasil ditambah' 
         ]);
     }
 
@@ -41,7 +39,7 @@ class OrderItemController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => OrderItem::findOrFail($id)
+            'data' => $this->orderItemRepository->getById($id)
         ]);
     }
 
@@ -50,12 +48,9 @@ class OrderItemController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $orderItem = OrderItem::findOrFail($id);
-        $orderItem->update([
-            'order_id' => $request->order_id ?? $orderItem->order_id,
-            'product_id' => $request->product_id ?? $orderItem->product_id,
-            'quantity' => $request->quantity ?? $orderItem->quantity,
-            'price' => $request->price ?? $orderItem->price
+        return response()->json([
+            $this->orderItemRepository->update($request, $id),
+            'status' => 'data berhasil diupdate'
         ]);
     }
 
@@ -65,8 +60,8 @@ class OrderItemController extends Controller
     public function destroy(string $id)
     {
         return response()->json([
-            OrderItem::findOrFail($id)->delete(),
-            'status' => 'data berhasil dihapus'
+            $this->orderItemRepository->delete($id),
+            'status' => 'Data berhasil dihapus'
         ]);
     }
 }
