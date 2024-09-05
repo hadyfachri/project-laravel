@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderItemRequest;
 use App\Models\OrderItem;
 use App\Repositories\OrderItemRepository;
 use Illuminate\Http\Request;
@@ -46,7 +47,7 @@ class OrderItemController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(OrderItemRequest $request, string $id)
     {
         return response()->json([
             $this->orderItemRepository->update($request, $id),

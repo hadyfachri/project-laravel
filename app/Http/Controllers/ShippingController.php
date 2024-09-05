@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ShippingRequest;
 use App\Models\Shipping;
 use App\Repositories\ShippingRepository;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class ShippingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ShippingRequest $request)
     {
         return response()->json([
             $this->shippingRepository->create($request),

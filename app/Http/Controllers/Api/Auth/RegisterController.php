@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,7 @@ class RegisterController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function register(Request $request)
+    public function register(UserRequest $request)
     {
         $user = User::create([
             'name' => $request->name ?? null,

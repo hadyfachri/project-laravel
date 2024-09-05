@@ -34,7 +34,7 @@ class PaymentRepository
         return $this->model->create([
             'order_id' => $request->order_id,
             'amount' => $request->amount,
-            'payment_method' => $request->payment_method,
+            'payment_method' => $request->payment_method ?? 'pending',
             'status' => $request->status,
             'transaction_date' => Carbon::now(),
         ]);

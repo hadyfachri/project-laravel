@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PaymentRequest;
 use App\Models\Payment;
 use App\Repositories\PaymentRepository;
 use Carbon\Carbon;
@@ -26,7 +27,7 @@ class PaymentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PaymentRequest $request)
     {
         return response()->json([
             $this->paymentRepository->create($request),

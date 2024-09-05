@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\InventoryRequest;
 use App\Models\Inventory;
 use App\Repositories\InventoryRepository;
 use Carbon\Carbon;
@@ -27,7 +28,7 @@ class InventoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(InventoryRequest $request)
     {
         return response()->json([
             'status' => 'data berhasil ditambahkan',

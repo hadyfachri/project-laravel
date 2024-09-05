@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use App\Repositories\CategoryRepository;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
         return response()->json([
             'data' => $this->categoryRepository->create($request),
@@ -45,7 +46,7 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CategoryRequest $request, string $id)
     {
         
         return response()->json([
