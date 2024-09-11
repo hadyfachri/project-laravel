@@ -25,7 +25,7 @@ class OrderRequest extends FormRequest
         return [
             'user_id'       => 'required|uuid',
             'total_price'   => 'required|decimal:10,2',
-            'status'        => 'required|string|in:shipping,',
+            'status'        => 'required|string|in:shipping,pending',
         ];
     }
 }

@@ -31,23 +31,15 @@ class ProductRepository
     public function create($request)
     {
         $image = $request->file('image');
-        $image->storeAs('/public/post$post', $image->hashName());
-        $isAdmin = $request->usre()->where('role', 'admin');
-        if($isAdmin)
-        {
+        $image?$image->storeAs('/public/storage', $image->hashName()):null;
             return $this->model->create([
                 'category_id' => $request->category_id,
                 'name' => $request->name,
                 'description' => $request->description,
                 'price' => $request->price,
                 'stock' => $request->stock,
-                'image' => $image->hashName()
+                'image' => $request->image ? $image->hashName():null
         ]);
-        }
-        else
-        {
-            return response()->json(['Hanya admin yang dapat input product']);
-        }
     }
 
     public function update($request, $id)

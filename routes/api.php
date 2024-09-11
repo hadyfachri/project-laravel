@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\ProductController;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -26,6 +27,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => 'auth:api'], function(){
     Route::apiResource('product', ProductController::class);
+    Route::apiResource('order', OrderItemController::class);
     Route::apiResource('category', CategoryController::class);
     Route::apiResource('register', RegisterController::class);
     

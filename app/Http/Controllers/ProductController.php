@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductResource;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
@@ -21,7 +22,7 @@ class ProductController extends Controller
     public function index()
     {
         return response()->json([
-            'data' => $this->productRepository->getAll(),
+            'data' => ProductResource::collection($this->productRepository->getAll()),
         ]);
     }
 
