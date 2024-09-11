@@ -24,9 +24,9 @@ class ProductRequest extends FormRequest
     {
         return [
             'category_id'   => 'required|uuid',
-            'name'          => 'required|string|max:128|unique',
+            'name'          => 'required|string|max:128|unique:products',
             'description'   => 'sometimes|string|nullable',
-            'price'         => 'required|decimal:10,2',
+            'price'         => 'required|integer|max_digits:10',
             'stock'         => 'required|integer|max:10',
             'image'         => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
         ];
