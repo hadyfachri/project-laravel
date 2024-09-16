@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\InventoryRequest;
+use App\Http\Resources\InventoryResource;
 use App\Models\Inventory;
 use App\Repositories\InventoryRepository;
 use Carbon\Carbon;
@@ -12,16 +13,18 @@ use Illuminate\Http\Request;
 class InventoryController extends Controller
 {
     protected $inventoryRepository;
+    protected $inventoryResource;
 
-    public function __construct(InventoryRepository $inventoryRepository)
+    public function __construct(InventoryRepository $inventoryRepository, InventoryResource $inventoryResource)
     {
         $this->inventoryRepository = $inventoryRepository;
+        $this->inventoryResource = $inventoryResource;
     }
     
     public function index()
     {
         return response()->json([
-            'data' => $this->inventoryRepository->getAll(),
+            'data' => $this->inventoryResource->collection($this->inventoryRepository->getAll()),
         ]);
     }
 
@@ -42,7 +45,7 @@ class InventoryController extends Controller
     public function show(string $id)
     {
         return response()->josn([
-            'data' => $this->inventoryRepository->getById($id)
+            'data' => $this->inventoryResource->new($this->inventoryRepository->getById($id))
         ]);
     }
 
@@ -52,7 +55,8 @@ class InventoryController extends Controller
     public function update(Request $request, string $id)
     {
         return response()->json([
-            $this->inventoryRepository->update($request, $id)
+            $this->inventoryRepository->update($request, $id),
+            'status' => 'data berhasil diupdate!'
         ]);
     }
 

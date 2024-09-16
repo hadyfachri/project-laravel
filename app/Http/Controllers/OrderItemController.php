@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderItemRequest;
+use App\Http\Resources\OrderItemResource;
 use App\Models\OrderItem;
 use App\Repositories\OrderItemRepository;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class OrderItemController extends Controller
     public function index()
     {
         return response()->json([
-            'data' => $this->orderItemRepository->getAll(),
+            'data' => OrderItemResource::collection($this->orderItemRepository->getAll()),
         ]);
     }
 
@@ -40,7 +41,7 @@ class OrderItemController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => $this->orderItemRepository->getById($id)
+            'data' => new OrderItemResource($this->orderItemRepository->getById($id))
         ]);
     }
 

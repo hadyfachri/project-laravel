@@ -43,7 +43,7 @@ class PaymentRepository
             'transaction_date' => Carbon::now(),
         ]);
 
-        if($this->model->status != 'pending')
+        if($this->model->status == 'success')
         {
             $this->order->update([
                 'status' => 'shipping'

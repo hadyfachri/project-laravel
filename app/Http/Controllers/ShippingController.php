@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ShippingRequest;
+use App\Http\Resources\ShippingResource;
 use App\Models\Shipping;
 use App\Repositories\ShippingRepository;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class ShippingController extends Controller
     public function index()
     {
         return response()->json([
-            'data' => $this->shippingRepository->getAll(),
+            'data' => ShippingResource::collection($this->shippingRepository->getAll()),
         ]);
     }
 
@@ -40,7 +41,7 @@ class ShippingController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => $this->shippingRepository->getById($id)
+            'data' => new ShippingResource($this->shippingRepository->getById($id))
         ]);
     }
 

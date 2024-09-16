@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Inventory;
+use Carbon\Carbon;
 use JasonGuru\LaravelMakeRepository\Repository\BaseRepository;
 //use Your Model
 
@@ -31,8 +32,11 @@ class InventoryRepository
     public function create($request)
     {
         return $this->model->create([
-            'name' => $request->name,
-            'description' => $request->description
+            'supplier_id'   => $request->supplier_id,
+            'product_id'    => $request->product_id,
+            'quantity'      => $request->quantity,
+            'cost_price'    => $request->cost_price,
+            'recieved_date' => Carbon::now(),
         ]);
     }
 
@@ -40,8 +44,11 @@ class InventoryRepository
     {
         $inventory = $this->model;
         return $inventory->findOrfail($id)->update([
-            'name' => $request->name ?? $inventory->name,
-            'description' => $request->description ?? $inventory->description
+            'supplied_id' => $request->supplier_id ?? $inventory->supplier_id,
+            'product_id' => $request->product_id ?? $inventory->product_id,
+            'quantity' => $request->quantity ?? $inventory->quantity,
+            'cost_price' => $request->cost_price ?? $inventory->cost_price
+            
         ]);
         
     }

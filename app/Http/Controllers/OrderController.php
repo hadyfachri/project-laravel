@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
+use App\Http\Resources\OrderResource;
 use App\Models\Inventory;
 use App\Models\Order;
 use App\Repositories\OrderRepository;
@@ -20,7 +21,7 @@ class OrderController extends Controller
     public function index()
     {
         return response()->json([
-            'data' => $this->orderRepository->getAll(),
+            'data' => OrderResource::collection($this->orderRepository->getAll()),
         ]);
     }
 
@@ -41,7 +42,7 @@ class OrderController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => $this->orderRepository->getById($id)
+            'data' => new OrderResource($this->orderRepository->getById($id))
         ]);
     }
 

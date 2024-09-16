@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Repositories\CategoryRepository;
 use Illuminate\Http\Request;
@@ -11,16 +12,18 @@ use Illuminate\Support\Facades\Auth;
 class CategoryController extends Controller
 {
     protected $categoryRepository;
+    protected $categoryResource;
 
-    public function __construct(CategoryRepository $categoryRepository)
+    public function __construct(CategoryRepository $categoryRepository, CategoryResource $categoryResource)
     {
         $this->categoryRepository = $categoryRepository;
+        $this->categoryResource = $categoryResource;
     }
 
     public function index()
     {
         return response()->json([
-            'data' => $this->categoryRepository->getAll()]);
+            'data' => $this->categoryResource->collection($this->categoryRepository->getAll())]);
     }
 
     /**
@@ -51,7 +54,7 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => $this->categoryRepository->getById($id)
+            'data' => $this->categoryResource->new($this->categoryRepository->getById($id))
         ]);
     }
 

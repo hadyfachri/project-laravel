@@ -14,6 +14,13 @@ class InventoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'supplier_name' => $this->supplier->name,
+            'product_name'=> $this->product->name,
+            'quantity'=> $this->quantity,
+            'cost_price'=> $this->cost_price,
+            'recieved_date'=> $this->recieved_date,
+        ];
     }
 }

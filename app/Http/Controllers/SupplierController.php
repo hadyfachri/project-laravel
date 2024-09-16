@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SupplierRequest;
+use App\Http\Resources\SupplierResource;
 use App\Models\Supplier;
 use App\Repositories\SupplierRepository;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class SupplierController extends Controller
     public function index()
     {
         return response()->json([
-            'data' => $this->supplierRepository->getAll(),
+            'data' => SupplierResource::collection($this->supplierRepository->getAll()),
         ]);
     }
 
@@ -40,7 +41,7 @@ class SupplierController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => $this->supplierRepository->getById($id)
+            'data' => new SupplierResource($this->supplierRepository->getById($id))
         ]);
     }
 

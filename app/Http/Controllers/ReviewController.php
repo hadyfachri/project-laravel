@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ReviewRequest;
+use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use App\Repositories\ReviewRepository;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class ReviewController extends Controller
     public function index()
     {
         return response()->json([
-            'data' => $this->reviewRepository->getAll(),
+            'data' => ReviewResource::collection($this->reviewRepository->getAll()),
         ]);
     }
 
@@ -40,7 +41,7 @@ class ReviewController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => $this->reviewRepository->getById($id)
+            'data' => new ReviewResource($this->reviewRepository->getById($id))
         ]);
     }
 

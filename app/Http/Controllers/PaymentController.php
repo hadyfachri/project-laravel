@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PaymentRequest;
+use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use App\Repositories\PaymentRepository;
 use Carbon\Carbon;
@@ -20,7 +21,7 @@ class PaymentController extends Controller
     public function index()
     {
         return response()->json([
-            'data' => $this->paymentRepository->getAll(),
+            'data' => PaymentResource::collection($this->paymentRepository->getAll()),
         ]);
     }
 
@@ -41,7 +42,7 @@ class PaymentController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'data' => $this->paymentRepository->getById($id)
+            'data' => new PaymentResource($this->paymentRepository->getById($id))
         ]);
     }
 
